@@ -3,22 +3,24 @@ services:
   web:
     image: odoo:10.0
     depends_on:
-      - db
+      - mydb
     ports:
       - "8069:8069"
     environment:
     - HOST=mydb
-    - USER=odoo
-    - PASSWORD=myodoo
+    - USER=myodoouser
+    - PASSWORD=myodoopassword
     volumes:
       - ./stack/odoo:/var/lib/odoo
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
-  db:
+    links:
+      - mydb:mydb
+  mydb:
     image: postgres:9.4
     environment:
-      - POSTGRES_PASSWORD=odoo
-      - POSTGRES_USER=myodoo
+      - POSTGRES_USER=myodoouser
+      - POSTGRES_PASSWORD=myodoopassword
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./stack/postgres:/var/lib/postgresql/data/pgdata
